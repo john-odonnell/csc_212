@@ -1,4 +1,4 @@
-# array assignment
+mv # array assignment
 a = [31, 41, 59, 26, 41, 58]    # establish array
 print(a)                        # print initial array
 

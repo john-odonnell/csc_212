@@ -1,0 +1,25 @@
+                Unsorted        Sorted          Reversed        Partial
+Insertion       0.6869843006    0.0006368160    1.2663440704    0.5328152180
+Bubble          0.8778955936    0.7883031368    0.7855319977    0.8191521168
+Python          0.0000600815    0.0000627041    0.0000607967    0.0000603199
+
+Question 1:
+Insertion Sort performed the best on pre-sorted lists.
+Insertion Sort performed the worst on reversed lists.
+
+Question 2:
+Insertion Sort's best and worst input differ by a factor of 4.
+This is because it does't enter the while loop at all for a pre-sorted list,
+    but has to execute the while loop at (index + 1) times.
+
+Question 3:
+Bubble Sort performed the best on reversed lists.
+Bubble Sort performed the worst on unsorted list.
+
+Question 4:
+Bubble Sort's best and worst input differ by a factor of 0.
+This is because it's best and worse case run times are both O(n^2).
+
+Question 5:
+Insertion Sort and Bubble Sort are both slower than Python's built in function
+    in every case by at least a factor of 4.

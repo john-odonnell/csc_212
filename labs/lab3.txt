@@ -1,7 +1,7 @@
                 Unsorted        Sorted          Reversed        Partial
-Insertion       0.6869843006    0.0006368160    1.2663440704    0.5328152180
-Bubble          0.8778955936    0.7883031368    0.7855319977    0.8191521168
-Python          0.0000600815    0.0000627041    0.0000607967    0.0000603199
+Insertion       0.672468        0.000640        1.338961        0.502118
+Bubble          0.865112        0.797769        0.801339        0.835181
+Python          0.000062        0.000062        0.000065        0.000062
 
 Question 1:
 Insertion Sort performed the best on pre-sorted lists.

@@ -135,21 +135,21 @@ def main():
         if name == "Insertion":
             for i in range(0, 4):
                 if i < 3:
-                    print(str(format(insertion_results[i], '.10f')) + "\t", end='')
+                    print(str(format(insertion_results[i], '.6f')) + "\t", end='')
                 else:
-                    print(str(format(insertion_results[i], '.10f')))
+                    print(str(format(insertion_results[i], '.6f')))
         elif name == "Bubble":
             for i in range(0, 4):
                 if i < 3:
-                    print(str(format(bubble_results[i], '.10f')) + "\t", end='')
+                    print(str(format(bubble_results[i], '.6f')) + "\t", end='')
                 else:
-                    print(str(format(bubble_results[i], '.10f')))
+                    print(str(format(bubble_results[i], '.6f')))
         elif name == "Python":
             for i in range(0, 4):
                 if i < 3:
-                    print(str(format(python_results[i], '.10f')) + "\t", end='')
+                    print(str(format(python_results[i], '.6f')) + "\t", end='')
                 else:
-                    print(str(format(python_results[i], '.10f')))
+                    print(str(format(python_results[i], '.6f')))
 
     return
 

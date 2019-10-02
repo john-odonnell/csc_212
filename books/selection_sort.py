@@ -23,6 +23,17 @@ def selection_sort_smallest(array: list):
         # array[to_sort] = smallest_value
 
 
+# A is list, n is length, i is index to populate
+def selection_sort_recursive(A, n, i):
+    if i == n:
+        return
+    else:
+        k = find_min_index(A, n, i)
+        if k != i:
+            A[i], A[k] = A[k], A[i]
+        selection_sort_recursive(A, n, i + 1)
+
+
 def main():
     sel_sort_big = [100, 44, 0, 23, 55, 2, 77]
     print("Sel Sort Biggest")

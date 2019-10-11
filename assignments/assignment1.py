@@ -1,5 +1,7 @@
 import unittest
 import math
+import random
+
 
 def calendar() -> list:
     year = int(input("Enter year: "))
@@ -26,6 +28,7 @@ def calendar() -> list:
     months = ["January", "February", "March", "April", "May", "June", "July",
               "August", "September", "October", "November", "December"]
     weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    weekdays_full = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
     jan_first = 0
     jan_last = 30
@@ -60,42 +63,69 @@ def calendar() -> list:
                    days[aug_first:sep_first], days[sep_first:oct_first], days[oct_first:nov_first],
                    days[nov_first:dec_first], days[dec_first:]]
 
+    print("\nIn the Year " + str(year) + ", January 1 was/will be on a " + weekdays_full[days[0]] + "\n")
+
+    if leap_year:
+        print("It is a leap year.\n")
+    else:
+        print("It is not a leap year.\n")
+
+    print("     ***     CALENDAR FOR YEAR " + str(year) + "     ***\n")
+
     for i in range(0, 12):
         print(months[i] + "\n")
-        for j in range(0, 7):
+        for j in range(7):
             if j == 0:
                 print(weekdays[j], end='')
             elif j < 6:
-                print("\t" + weekdays[j], end='')
+                print("  " + weekdays[j], end='')
             else:
-                print("\t" + weekdays[j])
-        for j in range(0, month_lists[i][0]):
-            print("\t", end='')
-        for j in range(1, len(month_lists[i])):
-            continue
+                print("  " + weekdays[j])
 
-    for i in range(0, 12):
-        print(months[i] + "\n")
-        week_string = ""
+        weeks = []
+        this_week = []
         for j in range(1, len(month_lists[i]) + 1):
-            day_in_week = 0
-            while day_in_week < 7:
-                if j == 1:
-                    for k in range(0, month_lists[i][j]):
-                        week_string += "\t"
-                        day_in_week += 1
-                    week_string += str(j) + "\t"
-                    day_in_week += 1
+            if j == 1:
+                for k in range(0, month_lists[i][j - 1]):
+                    this_week.append(" ")
+                this_week.append(j)
+                if month_lists[i][j - 1] == 6:
+                    weeks.append(this_week)
+                    this_week = []
+            elif j == len(month_lists[i]):
+                this_week.append(j)
+                weeks.append(this_week)
+                this_week = []
+            elif month_lists[i][j - 1] < 6:
+                this_week.append(j)
+            elif month_lists[i][j - 1] == 6:
+                this_week.append(j)
+                weeks.append(this_week)
+                this_week = []
+
+        for j in range(len(weeks)):
+            for k in range(len(weeks[j])):
+                if weeks[j][k] == " ":
+                    print("     ", end='')
+                elif k == len(weeks[j]) - 1:
+                    if weeks[j][k] < 10:
+                        print("  " + str(weeks[j][k]))
+                    else:
+                        print(" " + str(weeks[j][k]))
                 else:
-                    week_string += str(j) + "\t"
+                    if weeks[j][k] < 10:
+                        print("  " + str(weeks[j][k]) + "  ", end='')
+                    else:
+                        print(" " + str(weeks[j][k]) + "  ", end='')
 
+        print("\n")
 
+    return days
 
 
 def alt_bubblesort(A: list, size: int) -> list:
     list_to_return = [A[:]]
-    print(A)
-    for sorted_bubble in range(0, size - 2):
+    for sorted_bubble in range(0, size - 1):
         i = size - 2
         while i >= sorted_bubble:
             if A[i + 1] < A[i]:
@@ -110,7 +140,7 @@ def switch_bubblesort(A: list, size: int) -> list:
     right_bubble = 0
     list_to_return = [A[:]]
     iteration = 1
-    while left_bubble + right_bubble < size - 1:
+    while left_bubble + right_bubble < size:
         if iteration % 2 == 1:
             for i in range(1 + left_bubble, size - right_bubble):
                 if A[i - 1] > A[i]:
@@ -167,16 +197,16 @@ def bucketsort(A: list, size:int) -> list:
 
 
 def main():
-    this_list = [12, 44, 0, 101, 23, 33, 3, 91, 19]
-    print(alt_bubblesort(this_list, len(this_list)))
-    print("\n")
+    # this_list = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+    # print(alt_bubblesort(this_list, len(this_list)))
+    # print("\n")
 
-    this_list = [10, 33, 13, 0, 12, 9, 99, 11, 1, 5]
-    print(switch_bubblesort(this_list, len(this_list)))
-    print("\n")
+    # this_list = [10, 33, 13, 0, 12, 9, 99, 11, 1, 5]
+    # print(switch_bubblesort(this_list, len(this_list)))
+    # print("\n")
 
-    this_list = [0.034, 0.444, 0.312, 0.41, 0.711, 0.666, 0.65, 0.6]
-    print(bucketsort(this_list, len(this_list)))
+    bucketsort_list = [0.9, 0.08, 0.88, 0.737, 0.07, 0.77, 0.11, 0.12, 0.333]
+    bucketsort(bucketsort_list, len(bucketsort_list))
 
     calendar()
 

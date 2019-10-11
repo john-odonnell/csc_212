@@ -88,22 +88,19 @@ def calendar() -> list:
             if j == 1:
                 for k in range(0, month_lists[i][j - 1]):
                     this_week.append(" ")
-                this_week.append(j)                       # month_lists[i][j])
+                this_week.append(j)
                 if month_lists[i][j - 1] == 6:
                     weeks.append(this_week)
-                    # print(this_week)
                     this_week = []
             elif j == len(month_lists[i]):
-                this_week.append(j)                       # month_lists[i][j])
+                this_week.append(j)
                 weeks.append(this_week)
-                # print(this_week)
                 this_week = []
             elif month_lists[i][j - 1] < 6:
-                this_week.append(j)                       # month_lists[i][j])
+                this_week.append(j)
             elif month_lists[i][j - 1] == 6:
-                this_week.append(j)                       # month_lists[i][j])
+                this_week.append(j)
                 weeks.append(this_week)
-                # print(this_week)
                 this_week = []
 
         for j in range(len(weeks)):

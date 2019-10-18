@@ -30,7 +30,6 @@ def calendar() -> list:
     weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     weekdays_full = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
-    jan_first = 0
     jan_last = 30
     feb_first = jan_last + 1
     if leap_year:
@@ -56,7 +55,6 @@ def calendar() -> list:
     nov_first = oct_last + 1
     nov_last = oct_last + 30
     dec_first = nov_last + 1
-    dec_last = nov_last + 31
 
     month_lists = [days[:feb_first], days[feb_first:mar_first], days[mar_first:apr_first], days[apr_first:may_first],
                    days[may_first:jun_first], days[jun_first:jul_first], days[jul_first:aug_first],
@@ -197,7 +195,7 @@ def bucketsort(A: list, size:int) -> list:
                 else:
                     if bucket_ceilings[j - 1] < A[i] <= bucket_ceilings[j]:
                         buckets[j].append(A[i])
-                        A[i] = 2.0
+                        # A[i] = 2.0
                         in_a_bucket = True
 
     filename1 = "bucket1.txt"
@@ -263,7 +261,7 @@ def columnsort(A: list, N: int) -> list:
     for i in range(0, len(columns[0])):
         new_column = -1
         new_index = -1
-        for j in range(0, len(columns)):
+        # for j in range(0, len(columns)):
 
 
 
@@ -280,7 +278,7 @@ def main():
     print(switch_bubblesort(this_list, len(this_list)))
     print("\n")
 
-    bucketsort_list = [0.1, 0.6, 0.4, 0.5, 0.9]
+    bucketsort_list = [0.1, 0.6, 0.4, 0.5, 0.9, 0.3, 0.2, 0.7, 0.8]
     bucketsort(bucketsort_list, 3)
 
     calendar()

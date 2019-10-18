@@ -132,6 +132,7 @@ def alt_bubblesort(A: list, size: int) -> list:
                 A[i + 1], A[i] = A[i], A[i + 1]
             i -= 1
         list_to_return.append(A[:])
+    list_to_return.append(A[:])
     return list_to_return
 
 
@@ -140,7 +141,7 @@ def switch_bubblesort(A: list, size: int) -> list:
     right_bubble = 0
     list_to_return = [A[:]]
     iteration = 1
-    while left_bubble + right_bubble < size:
+    while left_bubble + right_bubble < size - 1:
         if iteration % 2 == 1:
             for i in range(1 + left_bubble, size - right_bubble):
                 if A[i - 1] > A[i]:
@@ -157,6 +158,7 @@ def switch_bubblesort(A: list, size: int) -> list:
             iteration += 1
             left_bubble += 1
             list_to_return.append(A[:])
+    list_to_return.append(A[:])
     return list_to_return
 
 
@@ -171,23 +173,47 @@ def insertion_sort(A: list):
 
 
 def bucketsort(A: list, size:int) -> list:
-    buckets = [[], [], [], [], [], [], [], [], [], []]
+    buckets = []
     for i in range(0, size):
-        b_index = int(A[i] * 10)
-        buckets[b_index].append(A[i])
+        buckets.append([])
+
+    bucket_ceilings = []
+    current_ceiling = 0
+    for i in range(0, len(buckets) - 1):
+        current_ceiling += 1 / size
+        bucket_ceilings.append(current_ceiling)
+    bucket_ceilings.append(1)
+
+    print(bucket_ceilings)
+
+    for i in range(0, len(A)):
+        in_a_bucket = False
+        while not in_a_bucket:
+            for j in range(0, len(bucket_ceilings)):
+                if j == 0:
+                    if A[i] <= bucket_ceilings[j]:
+                        buckets[j].append(A[i])
+                        in_a_bucket = True
+                else:
+                    if bucket_ceilings[j - 1] < A[i] <= bucket_ceilings[j]:
+                        buckets[j].append(A[i])
+                        A[i] = 2.0
+                        in_a_bucket = True
 
     filename1 = "bucket1.txt"
     filename2 = "bucket2.txt"
 
     first_output = open(filename1, "w")
-    first_output.write(str(buckets))
+    for bucket in buckets:
+        first_output.write(str(bucket) + "\n")
     first_output.close()
 
     for bucket in buckets:
         insertion_sort(bucket)
 
     second_output = open(filename2, "w")
-    second_output.write(str(buckets))
+    for bucket in buckets:
+        second_output.write(str(bucket) + "\n")
     second_output.close()
 
     list_to_return = []
@@ -196,17 +222,66 @@ def bucketsort(A: list, size:int) -> list:
     return list_to_return
 
 
+# diffuse into functions or simplify into less loops
+# also replace len calls with R and S
+def columnsort(A: list, N: int) -> list:
+    columns = []
+    R = 0
+    S = 0
+
+    for i in range(0, math.sqrt(N)):
+        if N % i == 0:
+            possibleS = i
+            possibleR = N / i
+            if possibleR % 2 == 0:
+                if possibleR % possibleS == 0:
+                    if R >= (2 * possibleS**2):
+                        R = possibleR
+                        S = possibleS
+
+    for i in range(0, S):
+        columns.append([])
+    for i in range(0, len(A)):
+        column = i % S
+        columns[column].append(A[i])
+
+    for i in range(0, len(columns)):
+        switch_bubblesort(columns[i], len(columns[i]))
+
+    columns_reference = columns[:]
+    for i in range(0, len(columns_reference)):
+        new_index = -1
+        for j in range(0, len(columns_reference[i])):
+            new_column = j % S
+            if j % S == 0:
+                j += 1
+            columns[new_column[new_index]] = columns_reference[i][j]
+
+    for i in range(0, len(columns)):
+        switch_bubblesort(columns[i], len(columns[i]))
+
+    for i in range(0, len(columns[0])):
+        new_column = -1
+        new_index = -1
+        for j in range(0, len(columns)):
+
+
+
+
+
+
+
 def main():
-    # this_list = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-    # print(alt_bubblesort(this_list, len(this_list)))
-    # print("\n")
+    this_list = [6, 10, 3, 9, 4, 8, 7, 1]
+    print(alt_bubblesort(this_list, len(this_list)))
+    print("\n")
 
-    # this_list = [10, 33, 13, 0, 12, 9, 99, 11, 1, 5]
-    # print(switch_bubblesort(this_list, len(this_list)))
-    # print("\n")
+    this_list = [8, 7, 6, 5, 4, 3, 2, 1, 0]
+    print(switch_bubblesort(this_list, len(this_list)))
+    print("\n")
 
-    bucketsort_list = [0.9, 0.08, 0.88, 0.737, 0.07, 0.77, 0.11, 0.12, 0.333]
-    bucketsort(bucketsort_list, len(bucketsort_list))
+    bucketsort_list = [0.1, 0.6, 0.4, 0.5, 0.9]
+    bucketsort(bucketsort_list, 3)
 
     calendar()
 

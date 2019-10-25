@@ -3,8 +3,8 @@ import math
 import random
 
 
-def calendar() -> list:
-    year = int(input("Enter year: "))
+def calendar(year: int) -> list:
+    # year = int(input("Enter year: "))
     days = []
 
     leap_year = False
@@ -130,7 +130,8 @@ def alt_bubblesort(A: list, size: int) -> list:
                 A[i + 1], A[i] = A[i], A[i + 1]
             i -= 1
         list_to_return.append(A[:])
-    list_to_return.append(A[:])
+    if size > 0:
+        list_to_return.append(A[:])
     return list_to_return
 
 
@@ -156,7 +157,8 @@ def switch_bubblesort(A: list, size: int) -> list:
             iteration += 1
             left_bubble += 1
             list_to_return.append(A[:])
-    list_to_return.append(A[:])
+    if size % 2 == 1:
+        list_to_return.append(A[:])
     return list_to_return
 
 
@@ -172,31 +174,17 @@ def insertion_sort(A: list):
 
 def bucketsort(A: list, size:int) -> list:
     buckets = []
-    for i in range(0, size):
+    for i in range(size):
         buckets.append([])
-
-    bucket_ceilings = []
-    current_ceiling = 0
-    for i in range(0, len(buckets) - 1):
-        current_ceiling += 1 / size
-        bucket_ceilings.append(current_ceiling)
-    bucket_ceilings.append(1)
-
-    print(bucket_ceilings)
 
     for i in range(0, len(A)):
         in_a_bucket = False
         while not in_a_bucket:
-            for j in range(0, len(bucket_ceilings)):
-                if j == 0:
-                    if A[i] <= bucket_ceilings[j]:
-                        buckets[j].append(A[i])
-                        in_a_bucket = True
-                else:
-                    if bucket_ceilings[j - 1] < A[i] <= bucket_ceilings[j]:
-                        buckets[j].append(A[i])
-                        # A[i] = 2.0
-                        in_a_bucket = True
+            for j in range(0, size):
+                if A[i] < ((j + 1) / size):
+                    buckets[j].append(A[i])
+                    in_a_bucket = True
+                    break
 
     filename1 = "bucket1.txt"
     filename2 = "bucket2.txt"
@@ -272,6 +260,10 @@ def columnsort(A: list, N: int) -> list:
 class Tests(unittest.TestCase):
 
     def testAltBubble(self):
+        # test for empty
+        empty_list = []
+        alt_bubblesort(empty_list, len(empty_list))
+        self.assertListEqual(empty_list, [])
         # test for reversed list
         rev_list = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
         alt_bubblesort(rev_list, len(rev_list))
@@ -298,6 +290,10 @@ class Tests(unittest.TestCase):
         self.assertListEqual(large_list, [-127388, -99234, 112343, 8765690, 91235672])
 
     def testSwitchBubble(self):
+        # test empty
+        empty_list = []
+        switch_bubblesort(empty_list, len(empty_list))
+        self.assertListEqual(empty_list, [])
         # test for reversed list
         rev_list = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
         switch_bubblesort(rev_list, len(rev_list))
@@ -333,19 +329,11 @@ class Tests(unittest.TestCase):
 
 
 def main():
-    this_list = [6, 10, 3, 9, 4, 8, 7, 1]
-    print(alt_bubblesort(this_list, len(this_list)))
-    print("\n")
-
-    this_list = [8, 7, 6, 5, 4, 3, 2, 1, 0]
-    print(switch_bubblesort(this_list, len(this_list)))
-    print("\n")
-
-    bucketsort_list = [0.1, 0.6, 0.4, 0.5, 0.9, 0.3, 0.2, 0.7, 0.8]
-    bucketsort(bucketsort_list, 3)
-
-    calendar()
+    list = [0.5, 0.7, 0.9, 0.4, 0.3, 0.5, 0.05, 0.55, 0.11]
+    bucketsort(list, 4)
+    return
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # unittest.main()
+    main()

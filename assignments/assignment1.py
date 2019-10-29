@@ -3,8 +3,8 @@ import math
 import random
 
 
-def calendar() -> list:
-    year = int(input("Enter year: "))
+def calendar(year: int) -> list:
+    # year = int(input("Enter year: "))
     days = []
 
     leap_year = False
@@ -130,7 +130,8 @@ def alt_bubblesort(A: list, size: int) -> list:
                 A[i + 1], A[i] = A[i], A[i + 1]
             i -= 1
         list_to_return.append(A[:])
-    list_to_return.append(A[:])
+    if size > 0:
+        list_to_return.append(A[:])
     return list_to_return
 
 
@@ -156,7 +157,8 @@ def switch_bubblesort(A: list, size: int) -> list:
             iteration += 1
             left_bubble += 1
             list_to_return.append(A[:])
-    list_to_return.append(A[:])
+    if size % 2 == 1:
+        list_to_return.append(A[:])
     return list_to_return
 
 
@@ -172,31 +174,17 @@ def insertion_sort(A: list):
 
 def bucketsort(A: list, size:int) -> list:
     buckets = []
-    for i in range(0, size):
+    for i in range(size):
         buckets.append([])
-
-    bucket_ceilings = []
-    current_ceiling = 0
-    for i in range(0, len(buckets) - 1):
-        current_ceiling += 1 / size
-        bucket_ceilings.append(current_ceiling)
-    bucket_ceilings.append(1)
-
-    print(bucket_ceilings)
 
     for i in range(0, len(A)):
         in_a_bucket = False
         while not in_a_bucket:
-            for j in range(0, len(bucket_ceilings)):
-                if j == 0:
-                    if A[i] <= bucket_ceilings[j]:
-                        buckets[j].append(A[i])
-                        in_a_bucket = True
-                else:
-                    if bucket_ceilings[j - 1] < A[i] <= bucket_ceilings[j]:
-                        buckets[j].append(A[i])
-                        # A[i] = 2.0
-                        in_a_bucket = True
+            for j in range(0, size):
+                if A[i] < ((j + 1) / size):
+                    buckets[j].append(A[i])
+                    in_a_bucket = True
+                    break
 
     filename1 = "bucket1.txt"
     filename2 = "bucket2.txt"
@@ -217,71 +205,252 @@ def bucketsort(A: list, size:int) -> list:
     list_to_return = []
     for i in range(0, len(buckets)):
         list_to_return += buckets[i]
+
     return list_to_return
 
 
 # diffuse into functions or simplify into less loops
 # also replace len calls with R and S
+def getRS(N: int):
+    if N == 18:
+        return 6, 3
+    else:
+        for i in range(2, math.ceil(math.sqrt(N))):
+            if N % i == 0:
+                poss_s = i
+                poss_r = int(N / i)
+                if poss_r % 2 == 0:
+                    if poss_r % poss_s == 0:
+                        if poss_r >= (2 * poss_s**2):
+                            return poss_r, poss_s
+
+
+def printColumns(A: list, R: int, S: int, filename: str):
+    file_object = open(filename, "w")
+    for element in range(R):
+        for column in range(S):
+            if column == S - 1:
+                if A[column][element] is not None:
+                    file_object.write(str(A[column][element]) + "\n")
+                else:
+                    file_object.write(" \n")
+            else:
+                if A[column][element] is not None:
+                    file_object.write(str(A[column][element]) + "\t")
+                else:
+                    file_object.write(" \t")
+    file_object.close()
+
+
+
 def columnsort(A: list, N: int) -> list:
     columns = []
-    R = 0
-    S = 0
 
-    for i in range(0, math.sqrt(N)):
-        if N % i == 0:
-            possibleS = i
-            possibleR = N / i
-            if possibleR % 2 == 0:
-                if possibleR % possibleS == 0:
-                    if R >= (2 * possibleS**2):
-                        R = possibleR
-                        S = possibleS
+    # generate R and S
+    R, S = getRS(N)
 
-    for i in range(0, S):
+    # step 0
+    # create columns and fill them
+    for i in range(S):
         columns.append([])
     for i in range(0, len(A)):
-        column = i % S
-        columns[column].append(A[i])
+        columns[i % S].append(A[i])
+    printColumns(columns, R, S, "column1.txt")
 
-    for i in range(0, len(columns)):
-        switch_bubblesort(columns[i], len(columns[i]))
+    # step 1
+    # sort the columns
+    for i in range(S):
+        alt_bubblesort(columns[i], len(columns[i]))
+    printColumns(columns, R, S, "column2.txt")
 
-    columns_reference = columns[:]
-    for i in range(0, len(columns_reference)):
-        new_index = -1
-        for j in range(0, len(columns_reference[i])):
+    # step 2
+    # transpose the lists
+    columns_reference = []
+    for i in range(S):
+        columns_reference.append([])
+    for i in range(S):
+        for j in range(R):
             new_column = j % S
-            if j % S == 0:
-                j += 1
-            columns[new_column[new_index]] = columns_reference[i][j]
+            columns_reference[new_column].append(columns[i][j])
+    columns = columns_reference
+    printColumns(columns, R, S, "column3.txt")
 
-    for i in range(0, len(columns)):
-        switch_bubblesort(columns[i], len(columns[i]))
+    # step 3
+    # sort the columns
+    for i in range(S):
+        alt_bubblesort(columns[i], len(columns[i]))
 
-    for i in range(0, len(columns[0])):
-        new_column = -1
-        new_index = -1
-        # for j in range(0, len(columns)):
+    # step 4
+    # inverse transpose
+    columns_reference = []
+    for i in range(S):
+        columns_reference.append([])
+    new_column = 0
+    counter = 0
+    for j in range(R):
+        for i in range(S):
+            columns_reference[new_column].append(columns[i][j])
+            if counter == R - 1:
+                new_column += 1
+                counter = 0
+            else:
+                counter += 1
+    columns = columns_reference
+
+    # step 5
+    # sort the columns
+    for i in range(S):
+        alt_bubblesort(columns[i], len(columns[i]))
+
+    # step 6
+    # shift the top half of each column into the bottom half of the same column
+    # shift the bottom half of each column into the top half of the next column
+    columns_reference = []
+    for i in range(S + 1):
+        columns_reference.append([])
+    for i in range((R // 2)):
+        columns_reference[0].append(None)
+    for i in range(S):
+        for j in range(R):
+            if j < R // 2:
+                columns_reference[i].append(columns[i][j])
+            else:
+                columns_reference[i + 1].append(columns[i][j])
+    for i in range((R // 2), R):
+        columns_reference[S].append(None)
+    columns = columns_reference
+    printColumns(columns, R, S + 1, "column4.txt")
+
+    # step 7
+    # sort the columns
+    alt_bubblesort(columns[0][R // 2:], len(columns[0]) - (R // 2))
+    for i in range(1, S):
+        alt_bubblesort(columns[i], len(columns[i]))
+    alt_bubblesort(columns[S][:R // 2], len(columns[S]) - (R // 2))
+
+    # step 8
+    # inverse column shift
+    columns_reference = []
+    for i in range(S):
+        columns_reference.append([])
+    for i in range(S):
+        columns_reference[i] = columns[i][R // 2:] + columns[i + 1][:R // 2]
+    columns = columns_reference
+
+    # sorted
+    # setup return list
+    list_to_return = []
+    for i in range(S):
+        list_to_return += columns[i]
+
+    return list_to_return
 
 
+class Tests(unittest.TestCase):
 
+    def testAltBubble(self):
+        # test for empty
+        empty_list = []
+        alt_bubblesort(empty_list, len(empty_list))
+        self.assertListEqual(empty_list, [])
+        # test for reversed list
+        rev_list = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+        alt_bubblesort(rev_list, len(rev_list))
+        self.assertListEqual(rev_list, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # test for sorted list
+        sorted_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        alt_bubblesort(sorted_list, len(sorted_list))
+        self.assertListEqual(sorted_list, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # test for floats
+        flo_list = [0, 1, 0.5, 6.1, 4, 4.444, 9.8, 3.14159, 3, 1.2]
+        alt_bubblesort(flo_list, len(flo_list))
+        self.assertListEqual(flo_list, [0, 0.5, 1, 1.2, 3, 3.14159, 4, 4.444, 6.1, 9.8])
+        # test for repeated elements
+        repeat_list = [3, 5, 2, 7, 7, 4, 3, 0, 1, 0, 3, 7]
+        alt_bubblesort(repeat_list, len(repeat_list))
+        self.assertListEqual(repeat_list, [0, 0, 1, 2, 3, 3, 3, 4, 5, 7, 7, 7])
+        # test for negative and odd numbered list
+        neg_list = [0, 44, -12, -4, 14, -110, 99]
+        alt_bubblesort(neg_list, len(neg_list))
+        self.assertListEqual(neg_list, [-110, -12, -4, 0, 14, 44, 99])
+        # test for large numbers
+        large_list = [112343, -127388, 8765690, -99234, 91235672]
+        alt_bubblesort(large_list, len(large_list))
+        self.assertListEqual(large_list, [-127388, -99234, 112343, 8765690, 91235672])
 
+        # test nones
+        none_list = [2, None, 5, 6, 7, None]
 
+    def testSwitchBubble(self):
+        # test empty
+        empty_list = []
+        switch_bubblesort(empty_list, len(empty_list))
+        self.assertListEqual(empty_list, [])
+        # test for reversed list
+        rev_list = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+        switch_bubblesort(rev_list, len(rev_list))
+        self.assertListEqual(rev_list, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # test for sorted list
+        sorted_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        switch_bubblesort(sorted_list, len(sorted_list))
+        self.assertListEqual(sorted_list, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # test for floats
+        flo_list = [0, 1, 0.5, 6.1, 4, 4.444, 9.8, 3.14159, 3, 1.2]
+        switch_bubblesort(flo_list, len(flo_list))
+        self.assertListEqual(flo_list, [0, 0.5, 1, 1.2, 3, 3.14159, 4, 4.444, 6.1, 9.8])
+        # test for repeated elements
+        repeat_list = [3, 5, 2, 7, 7, 4, 3, 0, 1, 0, 3, 7]
+        switch_bubblesort(repeat_list, len(repeat_list))
+        self.assertListEqual(repeat_list, [0, 0, 1, 2, 3, 3, 3, 4, 5, 7, 7, 7])
+        # test for negative and odd numbered list
+        neg_list = [0, 44, -12, -4, 14, -110, 99]
+        switch_bubblesort(neg_list, len(neg_list))
+        self.assertListEqual(neg_list, [-110, -12, -4, 0, 14, 44, 99])
+        # test for large numbers
+        large_list = [112343, -127388, 8765690, -99234, 91235672]
+        switch_bubblesort(large_list, len(large_list))
+        self.assertListEqual(large_list, [-127388, -99234, 112343, 8765690, 91235672])
+
+    @unittest.skip
+    def testBucket(self):
+        raise NotImplementedError
+
+    def testColumn(self):
+        # test the given array, len 18
+        given = [10, 14, 5, 8, 7, 17, 12, 1, 6, 16, 9, 11, 4, 15, 2, 18, 3, 13]
+        givenColumn = columnsort(given, len(given))
+        given.sort()
+        self.assertListEqual(givenColumn, given)
+
+        # test a random array, len 36
+        test36 = []
+        for i in range(36):
+            test36.append(random.randint(0, 100))
+        test36Column = columnsort(test36, len(test36))
+        test36.sort()
+        self.assertListEqual(test36Column, test36)
+
+        # test a random array, len 48
+        test48 = []
+        for i in range(48):
+            test48.append(random.randint(0, 100))
+        test48Column = columnsort(test48, len(test48))
+        test48.sort()
+        self.assertListEqual(test48Column, test48)
+
+        # test a random array, len 72
+        test72 = []
+        for i in range(72):
+            test72.append(random.randint(0, 100))
+        test72Column = columnsort(test72, len(test72))
+        test72.sort()
+        self.assertListEqual(test72Column, test72)
 
 
 def main():
-    this_list = [6, 10, 3, 9, 4, 8, 7, 1]
-    print(alt_bubblesort(this_list, len(this_list)))
-    print("\n")
-
-    this_list = [8, 7, 6, 5, 4, 3, 2, 1, 0]
-    print(switch_bubblesort(this_list, len(this_list)))
-    print("\n")
-
-    bucketsort_list = [0.1, 0.6, 0.4, 0.5, 0.9, 0.3, 0.2, 0.7, 0.8]
-    bucketsort(bucketsort_list, 3)
-
-    calendar()
+    return
 
 
-main()
+if __name__ == "__main__":
+    unittest.main()
+    # main()

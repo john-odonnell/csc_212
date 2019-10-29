@@ -33,7 +33,7 @@ def merge_sort(array):
 
 
 def main():
-    array = [75, 12, 10, 11, 3, 0, 1]
+    array = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
     print(array)
     merge_sort(array)
     print(array)

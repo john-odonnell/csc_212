@@ -140,15 +140,15 @@ def switch_bubblesort(A: list, size: int) -> list:
     right_bubble = 0
     list_to_return = [A[:]]
     iteration = 1
-    while left_bubble + right_bubble < size - 1:
-        if iteration % 2 == 1:
+    while left_bubble + right_bubble < size:
+        if iteration % 2 == 0:
             for i in range(1 + left_bubble, size - right_bubble):
                 if A[i - 1] > A[i]:
                     A[i - 1], A[i] = A[i], A[i - 1]
             iteration += 1
             right_bubble += 1
             list_to_return.append(A[:])
-        elif iteration % 2 == 0:
+        elif iteration % 2 == 1:
             i = size - 2 - right_bubble
             while i >= left_bubble:
                 if A[i + 1] < A[i]:
@@ -157,11 +157,12 @@ def switch_bubblesort(A: list, size: int) -> list:
             iteration += 1
             left_bubble += 1
             list_to_return.append(A[:])
-    if size % 2 == 1:
+    if size > 0:
         list_to_return.append(A[:])
     return list_to_return
 
 
+# used to sort each bucket in bucket sort
 def insertion_sort(A: list):
     for i in range(1, len(A)):
         value = A[i]
@@ -215,6 +216,8 @@ def getRS(N: int):
     if N == 18:
         return 6, 3
     else:
+        theS = 0
+        theR = 0
         for i in range(2, math.ceil(math.sqrt(N))):
             if N % i == 0:
                 poss_s = i
@@ -222,9 +225,12 @@ def getRS(N: int):
                 if poss_r % 2 == 0:
                     if poss_r % poss_s == 0:
                         if poss_r >= (2 * poss_s**2):
-                            return poss_r, poss_s
+                            theS = poss_s
+                            theR = poss_r
+        return theR, theS
 
 
+# prints the columns at a given stage of columnsort
 def printColumns(A: list, R: int, S: int, filename: str):
     file_object = open(filename, "w")
     for element in range(R):
@@ -240,7 +246,6 @@ def printColumns(A: list, R: int, S: int, filename: str):
                 else:
                     file_object.write(" \t")
     file_object.close()
-
 
 
 def columnsort(A: list, N: int) -> list:
@@ -349,14 +354,15 @@ def columnsort(A: list, N: int) -> list:
 class Tests(unittest.TestCase):
 
     def testAltBubble(self):
+        # check sorting factor and return lists
         # test for empty
         empty_list = []
         alt_bubblesort(empty_list, len(empty_list))
         self.assertListEqual(empty_list, [])
         # test for reversed list
-        rev_list = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+        rev_list = [9, 8, 7, 6, 5, 4, 3, 2, 1]
         alt_bubblesort(rev_list, len(rev_list))
-        self.assertListEqual(rev_list, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertListEqual(rev_list, [1, 2, 3, 4, 5, 6, 7, 8, 9])
         # test for sorted list
         sorted_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         alt_bubblesort(sorted_list, len(sorted_list))
@@ -378,18 +384,48 @@ class Tests(unittest.TestCase):
         alt_bubblesort(large_list, len(large_list))
         self.assertListEqual(large_list, [-127388, -99234, 112343, 8765690, 91235672])
 
-        # test nones
-        none_list = [2, None, 5, 6, 7, None]
-
     def testSwitchBubble(self):
+        # test partially sorted
+        partsort = [1, 2, 3, 4, 6, 7, 5, 8]
+        list_of_part = switch_bubblesort(partsort, len(partsort))
+        self.assertListEqual(partsort, [1, 2, 3, 4, 5, 6, 7, 8])
         # test empty
         empty_list = []
-        switch_bubblesort(empty_list, len(empty_list))
+        list_of_lists = [[]]
+        list_of_empties = switch_bubblesort(empty_list, len(empty_list))
         self.assertListEqual(empty_list, [])
-        # test for reversed list
-        rev_list = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
-        switch_bubblesort(rev_list, len(rev_list))
-        self.assertListEqual(rev_list, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertListEqual(list_of_lists, list_of_empties)
+        # test for reversed list odd number
+        rev_list = [9, 8, 7, 6, 5, 4, 3, 2, 1]
+        list_of_lists = [[9, 8, 7, 6, 5, 4, 3, 2, 1],
+                         [1, 9, 8, 7, 6, 5, 4, 3, 2],
+                         [1, 8, 7, 6, 5, 4, 3, 2, 9],
+                         [1, 2, 8, 7, 6, 5, 4, 3, 9],
+                         [1, 2, 7, 6, 5, 4, 3, 8, 9],
+                         [1, 2, 3, 7, 6, 5, 4, 8, 9],
+                         [1, 2, 3, 6, 5, 4, 7, 8, 9],
+                         [1, 2, 3, 4, 6, 5, 7, 8, 9],
+                         [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                         [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                         [1, 2, 3, 4, 5, 6, 7, 8, 9]]
+        rev_list_list = switch_bubblesort(rev_list, len(rev_list))
+        self.assertListEqual(rev_list, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertListEqual(rev_list_list, list_of_lists)
+        # test for reversed list even number
+        rev_list = [8, 7, 6, 5, 4, 3, 2, 1]
+        list_of_lists = [[8, 7, 6, 5, 4, 3, 2, 1],
+                         [1, 8, 7, 6, 5, 4, 3, 2],
+                         [1, 7, 6, 5, 4, 3, 2, 8],
+                         [1, 2, 7, 6, 5, 4, 3, 8],
+                         [1, 2, 6, 5, 4, 3, 7, 8],
+                         [1, 2, 3, 6, 5, 4, 7, 8],
+                         [1, 2, 3, 5, 4, 6, 7, 8],
+                         [1, 2, 3, 4, 5, 6, 7, 8],
+                         [1, 2, 3, 4, 5, 6, 7, 8],
+                         [1, 2, 3, 4, 5, 6, 7, 8]]
+        rev_list_list = switch_bubblesort(rev_list, len(rev_list))
+        self.assertListEqual(rev_list, [1, 2, 3, 4, 5, 6, 7, 8])
+        self.assertListEqual(rev_list_list, list_of_lists)
         # test for sorted list
         sorted_list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         switch_bubblesort(sorted_list, len(sorted_list))
@@ -425,7 +461,7 @@ class Tests(unittest.TestCase):
         # test a random array, len 36
         test36 = []
         for i in range(36):
-            test36.append(random.randint(0, 100))
+            test36.append(random.randint(-50, 50))
         test36Column = columnsort(test36, len(test36))
         test36.sort()
         self.assertListEqual(test36Column, test36)
@@ -433,7 +469,7 @@ class Tests(unittest.TestCase):
         # test a random array, len 48
         test48 = []
         for i in range(48):
-            test48.append(random.randint(0, 100))
+            test48.append(random.randint(-50, 50))
         test48Column = columnsort(test48, len(test48))
         test48.sort()
         self.assertListEqual(test48Column, test48)
@@ -441,16 +477,18 @@ class Tests(unittest.TestCase):
         # test a random array, len 72
         test72 = []
         for i in range(72):
-            test72.append(random.randint(0, 100))
+            test72.append(random.randint(-50, 50))
         test72Column = columnsort(test72, len(test72))
         test72.sort()
         self.assertListEqual(test72Column, test72)
 
 
 def main():
+    list_part = [1, 2, 3, 4, 6, 7, 5, 8]
+    print(switch_bubblesort(list_part, len(list_part)))
     return
 
 
 if __name__ == "__main__":
-    unittest.main()
-    # main()
+    # unittest.main()
+    main()

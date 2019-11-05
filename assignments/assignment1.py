@@ -2,11 +2,16 @@ import unittest
 import math
 import random
 
+# John O'Donnell
+# Assignment 1
+# due 10/31/2019
+
 
 def calendar(year: int) -> list:
-    # year = int(input("Enter year: "))
+    # instantiate days list
     days = []
 
+    # determine if the input year is a leap year
     leap_year = False
     if year % 4 == 0:
         leap_year = True
@@ -15,21 +20,26 @@ def calendar(year: int) -> list:
             if year % 400 == 0:
                 leap_year = True
 
+    # set year length predicated on leap year
     year_length = 365
     if leap_year:
         year_length = 366
 
+    # calculate day 1
     day_jan_1 = (1 + (5 * ((year - 1) % 4)) + (4 * ((year - 1) % 100)) + (6 * ((year - 1) % 400))) % 7
 
+    # fill the days list
     for i in range(day_jan_1, day_jan_1 + year_length):
         day_of_week = i % 7
         days.append(day_of_week)
 
+    # lists of month names, day names, and day abbreviations
     months = ["January", "February", "March", "April", "May", "June", "July",
               "August", "September", "October", "November", "December"]
     weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     weekdays_full = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
+    # determine index of the first and last days of each month
     jan_last = 30
     feb_first = jan_last + 1
     if leap_year:
@@ -56,6 +66,7 @@ def calendar(year: int) -> list:
     nov_last = oct_last + 30
     dec_first = nov_last + 1
 
+    # instantiate a list of lists, each interior list represents a month
     month_lists = [days[:feb_first], days[feb_first:mar_first], days[mar_first:apr_first], days[apr_first:may_first],
                    days[may_first:jun_first], days[jun_first:jul_first], days[jul_first:aug_first],
                    days[aug_first:sep_first], days[sep_first:oct_first], days[oct_first:nov_first],
@@ -70,8 +81,11 @@ def calendar(year: int) -> list:
 
     print("     ***     CALENDAR FOR YEAR " + str(year) + "     ***\n")
 
+    # print the months
     for i in range(0, 12):
+        # print month name
         print(months[i] + "\n")
+        # print weekday abbreviations
         for j in range(7):
             if j == 0:
                 print(weekdays[j], end='')
@@ -82,11 +96,18 @@ def calendar(year: int) -> list:
 
         weeks = []
         this_week = []
+        # fill in this_week with the next week of the month
+        # add it to the weeks array
         for j in range(1, len(month_lists[i]) + 1):
+            # when adding the first day of the month...
             if j == 1:
+                # ensure that the first day is preceeded by empty days
                 for k in range(0, month_lists[i][j - 1]):
                     this_week.append(" ")
+                # add the first day
                 this_week.append(j)
+                # if the first day of the month is a saturday
+                # add the week to the weeks list and reset this_week
                 if month_lists[i][j - 1] == 6:
                     weeks.append(this_week)
                     this_week = []
@@ -101,6 +122,7 @@ def calendar(year: int) -> list:
                 weeks.append(this_week)
                 this_week = []
 
+        # print each week in the weeks list
         for j in range(len(weeks)):
             for k in range(len(weeks[j])):
                 if weeks[j][k] == " ":
@@ -116,38 +138,49 @@ def calendar(year: int) -> list:
                     else:
                         print(" " + str(weeks[j][k]) + "  ", end='')
 
+        # seperate months by blank space
         print("\n")
 
     return days
 
 
 def alt_bubblesort(A: list, size: int) -> list:
+    # instantiate a return list
     list_to_return = [A[:]]
+    # as the sorted bubble grows from 0 to size - 1...
     for sorted_bubble in range(0, size - 1):
+        # bubble the smallest values from the last index to the front
         i = size - 2
         while i >= sorted_bubble:
             if A[i + 1] < A[i]:
                 A[i + 1], A[i] = A[i], A[i + 1]
             i -= 1
+        # add the new list to the return list
         list_to_return.append(A[:])
+    # after sorting, add the final list
     if size > 0:
         list_to_return.append(A[:])
     return list_to_return
 
 
 def switch_bubblesort(A: list, size: int) -> list:
-    left_bubble = 0
-    right_bubble = 0
-    list_to_return = [A[:]]
-    iteration = 1
+    left_bubble = 0     # left bubble size
+    right_bubble = 0    # right bubble size
+    list_to_return = [A[:]]     # return list
+    iteration = 1       # iteration count
+
+    # while the two bubbles do not account for the whole list..
     while left_bubble + right_bubble < size:
+        # bubble right on second and even iterations
         if iteration % 2 == 0:
             for i in range(1 + left_bubble, size - right_bubble):
                 if A[i - 1] > A[i]:
                     A[i - 1], A[i] = A[i], A[i - 1]
             iteration += 1
             right_bubble += 1
+            # append list to return list
             list_to_return.append(A[:])
+        # bubble left on first and odd iterations
         elif iteration % 2 == 1:
             i = size - 2 - right_bubble
             while i >= left_bubble:
@@ -156,7 +189,9 @@ def switch_bubblesort(A: list, size: int) -> list:
                 i -= 1
             iteration += 1
             left_bubble += 1
+            # append list to return list
             list_to_return.append(A[:])
+    # append the final list to the return list
     if size > 0:
         list_to_return.append(A[:])
     return list_to_return
@@ -164,9 +199,13 @@ def switch_bubblesort(A: list, size: int) -> list:
 
 # used to sort each bucket in bucket sort
 def insertion_sort(A: list):
+    # for each element of the list from index 1 to end...
     for i in range(1, len(A)):
-        value = A[i]
-        i_compare = i - 1
+        value = A[i]        # store value
+        i_compare = i - 1   # set index to compare against
+        # compare the value to each value before it
+        # shift the compared values to the right if they are greater
+        # insert the value once the value is compared against a smaller value
         while i_compare >= 0 and A[i_compare] > value:
             A[i_compare + 1] = A[i_compare]
             i_compare -= 1
@@ -174,35 +213,45 @@ def insertion_sort(A: list):
 
 
 def bucketsort(A: list, size:int) -> list:
-    buckets = []
-    for i in range(size):
+    buckets = []            # establish list of buckets
+    for i in range(size):   # add buckets to the bucket list
         buckets.append([])
 
+    # for each value in the list...
     for i in range(0, len(A)):
         in_a_bucket = False
+        # if the value has not yet been added to a bucket...
         while not in_a_bucket:
+            # check the value against the ceiling of each bucket and
             for j in range(0, size):
+                # insert the value into the first bucket with a ceiling
+                # greater than the value
                 if A[i] < ((j + 1) / size):
                     buckets[j].append(A[i])
                     in_a_bucket = True
                     break
 
+    # filenames for bucket storage
     filename1 = "bucket1.txt"
     filename2 = "bucket2.txt"
 
+    # output the unsorted buckets into a file
     first_output = open(filename1, "w")
     for bucket in buckets:
         first_output.write(str(bucket) + "\n")
     first_output.close()
 
+    # sort each bucket individually
     for bucket in buckets:
         insertion_sort(bucket)
 
+    # output the sorted buckets into a file
     second_output = open(filename2, "w")
     for bucket in buckets:
         second_output.write(str(bucket) + "\n")
     second_output.close()
 
+    # concatenate the buckets into one final sorted list
     list_to_return = []
     for i in range(0, len(buckets)):
         list_to_return += buckets[i]
@@ -210,11 +259,12 @@ def bucketsort(A: list, size:int) -> list:
     return list_to_return
 
 
-# diffuse into functions or simplify into less loops
-# also replace len calls with R and S
+# get R and S values for columnsort
 def getRS(N: int):
+    # hardcoded case for array of length 18
     if N == 18:
         return 6, 3
+    # otherwise: choose highest S and lowest R that satisfy the following
     else:
         theS = 0
         theR = 0
@@ -232,19 +282,25 @@ def getRS(N: int):
 
 # prints the columns at a given stage of columnsort
 def printColumns(A: list, R: int, S: int, filename: str):
+    # open file
     file_object = open(filename, "w")
+    # for each element in the columns
     for element in range(R):
+        # for each column
         for column in range(S):
+            # in the last column, write the value and new line to file
             if column == S - 1:
                 if A[column][element] is not None:
                     file_object.write(str(A[column][element]) + "\n")
                 else:
                     file_object.write(" \n")
+            # other wise, write the value and tab to file
             else:
                 if A[column][element] is not None:
                     file_object.write(str(A[column][element]) + "\t")
                 else:
                     file_object.write(" \t")
+    # close file
     file_object.close()
 
 
@@ -484,8 +540,6 @@ class Tests(unittest.TestCase):
 
 
 def main():
-    list_part = [1, 2, 3, 4, 6, 7, 5, 8]
-    print(switch_bubblesort(list_part, len(list_part)))
     return
 
 

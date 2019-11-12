@@ -1,10 +1,12 @@
 import unittest
+import sys
 
 # John O'Donnell
 # Assignment 2
 # Due 11/26/19 @ 11:59 pm
 
 
+# definition for node instantiation
 class CDLLNode:
     def __init__(self, time="", tweet="", next_node=None, prev_node=None):
         self.time: str = time
@@ -13,6 +15,7 @@ class CDLLNode:
         self.prev_node: CDLLNode = prev_node
 
 
+# definition for list instantiation
 class CDLL:
     def __init__(self):
         self.head: CDLLNode = None
@@ -51,7 +54,7 @@ class CDLL:
     def go_last(self):
         self.current = self.head.prev_node
 
-    # moves 'current' pointer n elements ahead (circuluarly)
+    # moves 'current' pointer n elements ahead (circularly)
     def skip(self, n: int):
         for i in range(n):
             self.current = self.current.next_node
@@ -63,8 +66,9 @@ class CDLL:
         print(str(self.current.tweet) + "\n")
 
 
-def add_to_list(this_list: CDLL, filename: str):
-    file_object = open(filename, "r")
+# function to add tweets to a CDLL object
+def add_to_list(this_list: CDLL):
+    file_object = open(sys.argv[1], "r")
     for line in file_object:
         components = line.split("|")
 
@@ -82,7 +86,6 @@ def add_to_list(this_list: CDLL, filename: str):
                 this_list.go_next()
                 counter += 1
             this_list.insert(time, tweet)
-    print("done adding.")
     file_object.close()
     return
 
@@ -93,7 +96,7 @@ def io_loop(this_list: CDLL):
 
     command = ""
     while command != "q":
-        command = input("input command. ")
+        command = input()
         if command == "n":
             this_list.go_next()
             this_list.print_current()
@@ -116,7 +119,7 @@ def io_loop(this_list: CDLL):
             while not found and tweet_counter < this_list.numnodes:
                 counter = 0
                 while not found and counter < len(this_list.current.tweet):
-                    if this_list.current.tweet[counter:counter + length] == word:
+                    if this_list.current.tweet[counter:counter + length].lower() == word.lower():
                         found = True
                     counter += 1
                 if not found:
@@ -129,7 +132,6 @@ def io_loop(this_list: CDLL):
         elif command[0] in ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]:
             this_list.skip(int(command))
             this_list.print_current()
-
     return
 
 
@@ -149,15 +151,25 @@ class Test(unittest.TestCase):
 
     def test_linked_list(self):
         linked_list = CDLL()
-        filename = "bbchealth.txt"
-        add_to_list(linked_list, filename)
+        add_to_list(linked_list)
+
+        order = True
+        linked_list.go_first()
+        linked_list.go_next()
+        i = 1
+        while i < linked_list.current.numnodes - 1 and order:
+            if linked_list.current.time > linked_list.current.prev_node.time:
+                order = False
+            i += 1
+            linked_list.go_next()
+
+        self.assertTrue(order, True)
 
 
 def main():
     linked_list = CDLL()
 
-    filename = input("input filename. ")
-    add_to_list(linked_list, filename)
+    add_to_list(linked_list)
 
     io_loop(linked_list)
     output_to_file(linked_list)

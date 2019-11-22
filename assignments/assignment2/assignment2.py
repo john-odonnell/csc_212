@@ -8,6 +8,7 @@ import sys
 
 # definition for node instantiation
 class CDLLNode:
+    # Node constructor
     def __init__(self, time="", tweet="", next_node=None, prev_node=None):
         self.time: str = time
         self.tweet: str = tweet
@@ -17,6 +18,7 @@ class CDLLNode:
 
 # definition for list instantiation
 class CDLL:
+    # CDLL constructor
     def __init__(self):
         self.head: CDLLNode = None
         self.current: CDLLNode = None
@@ -79,11 +81,15 @@ def add_to_list(this_list: CDLL):
     # opens file from command line argument
     file_object = open(sys.argv[1], "r")
     for line in file_object:
-        # split the line and isolate time and tweet
-        components = line.split("|")
-        date_time = components[1].split(" ")
+        # isolate tweet id and date/time
+        tweet_id_date_time_rest = line.split("|", 2)
+        # isolate date and time
+        date_time = tweet_id_date_time_rest[1].split(" ")
+        # isolate time
         time = date_time[3]
-        tweet = components[2].strip()
+        # isolate the tweet
+        tweet = tweet_id_date_time_rest[2].strip()
+
         # insert the tweet into the list based on its time signature
         if this_list.numnodes == 0:
             this_list.insert(time, tweet)
@@ -137,13 +143,23 @@ def io_loop(this_list: CDLL):
             found = False
             tweet_counter = 0
             while not found and tweet_counter < this_list.numnodes:
-                counter = 0
-                # searches each tweet in slices the length of the search string
-                # this will find the word if it is in quotations or followed by an apostrophe
-                while not found and counter < len(this_list.current.tweet):
-                    if this_list.current.tweet[counter:counter + length].lower() == word.lower():
-                        found = True
-                    counter += 1
+                # separate each tweet into its words
+                tweet_seperated = this_list.current.tweet.split(" ")
+                i = 0
+                # for each word in the tweet...
+                while i < len(tweet_seperated) and not found:
+                    # if the tweet word is at least as long as the search word...
+                    if len(tweet_seperated[i]) >= length:
+                        # check the tweet word for the presence of the search word
+                        counter = 0
+                        while counter <= len(tweet_seperated[i]) - length:
+                            if tweet_seperated[i][counter:counter + length].lower() == word.lower():
+                                found = True
+                            # increment character
+                            counter += 1
+                    # increment word
+                    i += 1
+                # increment tweet
                 if not found:
                     this_list.go_next()
                     tweet_counter += 1

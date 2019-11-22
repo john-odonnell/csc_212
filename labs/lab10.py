@@ -203,12 +203,6 @@ class Tests(unittest.TestCase):
         self.assertEqual(tree.root.left.right.key, 4)
         self.assertEqual(tree.root.right.right.left.key, 8)
 
-    def test_inOrder(self):
-        tree = BST()
-        arr = [5, 3, 7, 9, 2, 1, 6, 0, 4, 8]
-        tree.populate(arr)
-        tree.inorder()
-
     def test_search(self):
         tree = BST()
         arr = [5, 3, 7, 9, 2, 1, 6, 0, 4, 8]

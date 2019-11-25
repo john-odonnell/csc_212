@@ -1,4 +1,3 @@
-import unittest
 import sys
 
 # John O'Donnell
@@ -187,26 +186,6 @@ def output_to_file(this_list: CDLL):
     return
 
 
-# unittests, in development
-class Test(unittest.TestCase):
-
-    def test_linked_list(self):
-        linked_list = CDLL()
-        add_to_list(linked_list)
-
-        order = True
-        linked_list.go_first()
-        linked_list.go_next()
-        i = 1
-        while i < linked_list.current.numnodes - 1 and order:
-            if linked_list.current.time > linked_list.current.prev_node.time:
-                order = False
-            i += 1
-            linked_list.go_next()
-
-        self.assertTrue(order, True)
-
-
 def main():
     # instantiate linked list
     linked_list = CDLL()
@@ -223,5 +202,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # unittest.main()
     main()

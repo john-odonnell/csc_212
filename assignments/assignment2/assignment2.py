@@ -29,10 +29,9 @@ class CDLL:
         # if the list is only 1 node, it is still circular
         if self.numnodes == 0:
             # create a new node, set its next and prev to itself
-            new.next_node = new
-            new.prev_node = new
-            # make new the head
             self.head = new
+            self.head.next_node = self.head
+            self.head.prev_node = self.head
         # maintains circularity in all other cases
         else:
             # create new node, set its next and prev
@@ -44,8 +43,9 @@ class CDLL:
             # if new is replacing the head, change the head pointer
             if self.current == self.head and self.current.time >= time:
                 self.head = new
+        # set new current
         # increment the number of nodes
-        self.current = new
+        self.current = self.head
         self.numnodes = self.numnodes + 1
 
     # moves 'current' pointer to the next node (circularly)
@@ -66,7 +66,7 @@ class CDLL:
 
     # moves 'current' pointer n elements ahead (circularly)
     def skip(self, n: int):
-        for i in range(n):
+        for i in range(n % self.numnodes):
             self.current = self.current.next_node
 
     # prints the contents of the 'current' node
@@ -99,9 +99,12 @@ def add_to_list(this_list: CDLL):
             while this_list.current.time < time and counter < this_list.numnodes:
                 this_list.go_next()
                 counter += 1
+            if counter == this_list.numnodes:
+                this_list.go_first()
             this_list.insert(time, tweet)
     # close the file
     file_object.close()
+    this_list.go_first()
     return
 
 
@@ -133,7 +136,7 @@ def io_loop(this_list: CDLL):
             this_list.print_current()
         # num command prints the number of nodes in the list
         elif command == "num":
-            print(str(this_list.numnodes) + "\n")
+            print(str(this_list.numnodes))
         # s <string> command prints the next node that contains <string>
         # case insensitive
         elif command[0] == "s":
@@ -174,19 +177,6 @@ def io_loop(this_list: CDLL):
     return
 
 
-# only used for testing, delete before handing in
-def output_to_file(this_list: CDLL):
-    out_filename = "out_file.txt"
-    file_object = open(out_filename, "w")
-    counter = 0
-    this_list.go_first()
-    while counter < this_list.numnodes:
-        file_object.write(str(this_list.current.time) + "\n")
-        this_list.go_next()
-        counter += 1
-    return
-
-
 def main():
     # instantiate linked list
     linked_list = CDLL()
@@ -197,8 +187,6 @@ def main():
     # enter I/O loop
     io_loop(linked_list)
 
-    # output times to file
-    output_to_file(linked_list)
     return
 
 

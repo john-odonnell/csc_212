@@ -45,6 +45,7 @@ class CDLL:
             if self.current == self.head and self.current.time >= time:
                 self.head = new
         # increment the number of nodes
+        self.current = new
         self.numnodes = self.numnodes + 1
 
     # moves 'current' pointer to the next node (circularly)
@@ -72,7 +73,7 @@ class CDLL:
     # prints the time, then the tweet (each with a newline following)
     def print_current(self):
         print(self.current.time)
-        print(str(self.current.tweet) + "\n")
+        print(str(self.current.tweet))
 
 
 # function to add tweets to a CDLL object

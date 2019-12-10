@@ -49,7 +49,6 @@ def fillTable(dictionary: HashTable):
     file_object = open(sys.argv[2], "r", encoding="utf-8")
     for line in file_object:
         dictionary.insert(line.strip().lower())
-    print("Table Filled")
     return
 
 

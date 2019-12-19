@@ -1,0 +1,319 @@
+CSC 212 Final Exam
+Thu 12/19/19 @ 11:30 am
+Allowed one cheat sheet and a calculator
+
+Topics:
+Math concepts covered in week 1
+-------------------------------
+exponentiation is repeated multiplication is repeated addition
+properties of powers:
+    b^a * b^c = b^(a+c)
+    b^0 = 1
+    b^a / b^c = b(a-c)
+    1/b^c = b^-c
+    (b^a)^c = b^ac
+Powers of 2:
+    2^0 = 1
+    2^1 = 2
+    2^2 = 4
+    2^3 = 8
+    2^4 = 16
+    2^5 = 32
+    2^6 = 64
+    2^7 = 128
+    2^8 = 256
+    2^9 = 512
+    2^10 = 1024
+Important approximations
+    2^10 = 1024 /=/ 1000
+    2^20 = (2^10)^2 /=/ 1000^2 = (10^3)^2 = 10^6
+    2^30 = (2^10)^3 /=/ 1000^3 = (10^3)^3 = 10^9
+    2^32 = 2^30 * 2^2 = 4 * 10^9
+    2^64 = (2^32)^2 = (4 * 10^9)^2 = 16 * 10^18
+Logarithms
+    logB(x) is defined as the power to which the base B must be raised to to produce x
+    B^(logB(x)) = x
+    can be though of as the number of times x can be divided by B before reaching 1
+
+    Important properties:
+        logB(-1) = undefined
+        logB(1) = 0
+        logB(B) = 1
+        logB(B^x) = x
+        B^(logB(x)) = x
+        logB(xy) = ?
+        logB(x^y) = ?
+        logB(x/y) = ?
+
+    Change of Base Formula:
+        logB(x) = logD(x) / logD(B)
+Factorials
+    0! = 0, otherwise n! = n* (n-1)!
+    This grows exponentially
+Permutation
+    How many ways could one order a set of n object?
+    P(n) = n!
+Combination
+    C(n,k) is the number of ways of choosing k objects from n objects disregarding order
+    C(n,k) = n! / (k!(n-k)!)
+Basic Summations
+    S(i=1,n)(c) = c+c+c+...+c n times
+    S(i=1,n)(i) = 1+2+3+...+n = n(n+1) / 2
+    S(i=1,n)(i^2) = 1^2+2^2+3^2+...+n^2 = n(n+1)(2n+1) / 6
+    S(i=1,n)(i^3) = 1^3+2^3+3^3+...+n^3 = n^2(n+1)^2 / 4
+Floor and Ceiling
+
+Growth functions and asymptotic analysis
+----------------------------------------
+Algorithm running time determines how "quickly" it executes
+Computed based on the number of basic steps that the algorithm executes
+    This is most effected by input size and loops, nested or otherwise
+Asymptotic Running Time
+    Given the running time T(n)=f(n) equation for an algorithm, it is useful to see how well the algorithm executes for large input sizes
+    Asymptotic running time describes how the running time behaves as the size of the input increases without bound
+Big Theta Notation
+    For a given function g(n), Th(g(n)) is a set of functions such that:
+        Th(g(n)) = {
+            f(n) : there exists positive constants c1, c2, and n0 such that
+            0 <= c1g(n) <= f(n) <= c2g(n) for all n >= n0
+        }
+    Called an asymptotic tight bound for f(n)
+Big O Notation
+    For a given function g(n), O(g(n)) is a set of functions such that:
+        O(g(n)) = {
+            f(n) : there exists positive constants c and n0 such that
+            0 <= f(n) <= cg(n) for all n >= n0
+        }
+    Called the asymptotic upper bound for f(n)
+Big Omega Notation
+    Asymptotic lower bound for f(n)
+If f(n) = Th(g(n)) then f(n) = O(g(n)) && f(n) = Om(g(n))
+Generally, for any polynomial p(n) = S(i=0,d)(a(i)n^i), p(n) = O(n^d)
+Similarly, a zero-degree polynomial q(n) or a constant function : q(n) = O(1)
+Running Time for Insertion Sort
+    Best Case : T(n) = O(n)
+    Worst Case : T(n) = O(n^2)
+Modular Analysis
+    Sequential Steps : if steps appear sequentially then add their respective O()
+        loop
+        ...         N
+        endloop             O(N + M)
+        loop
+        ...         M
+        endloop
+    Embedded Steps: if steps appear embedded then multiply their respective O()
+        loop
+            loop        N   O(NM)
+            ...     M
+            endloop
+        endloop
+Correctly Determining Big-O
+    Can have multiple factors
+        O(NM)
+        O(logP + N^2) -> O(N^2)
+    But keep only the dominant factors
+        O(N + NlogN) -> O(NlogN)
+        O(NM + P) -> O(NM)
+        O(V^2 + VlogV) -> O(V^2)
+    Drop constants
+        O(2N + 3N^2) -> O(N^2)
+Order of Growth
+    More efficient                                     Less Efficient
+    LogLogN    LogN    sqrtN    N    NLogN    N^2    N^3    2^N    N!
+
+Divide and conquer algorithms
+-----------------------------
+Divide : break the larger problem into sub-problems that are smaller instances of the same problem
+Conquer : the sub-problems are solved recursively, unless the sub-problem is small enough to be solved in a straighforward manner
+Combine : combine the solutions of the sub-problems to find the solution of the original problem
+Merge Sort Algorithm
+    Divides the array into two sub-arrays, merge-sorts each, merges
+    O(n) space complexity
+    Merge sort stability is dependant on merging algorithm
+Recurrence Relations
+    When comparing the complexity of recursive algorithms we have to consider :
+        The sub-problems created
+        The size of the sub-problems
+        The work needed to create the sub-problems
+        The work needed to combine the sub-problems
+    Formally :
+        T(n) = aT(n/b) + D(n) + C(n)
+            where
+        a is the number of sub-problems that n is divided into
+        b is the size of the sub-problem
+        D(n) is the complexity it takes to divide the problem
+        C(n) is the complexity of combining the solutions
+    Therefore, for Merge-sort :
+        T(n) = 2T(n/2) + O(1) + O(n)
+            or
+        T(n) = 2T(n/2) + cn
+    This can be solved either by :
+        Unrolling the recursion (iterative method)
+        Substitution method (guess and prove)
+        Master method (memorize rules and apply)
+    Unrolling the Recursion :
+        T(n) = 2T(n/2) + cn
+             = 2(2T(n/4) + n/2) + cn = 4T(n/4) + 2cn
+             = 4(2T(n/8) + n/8) + 2cn = 8T(n/8) + 3cn
+             ...
+             = 2^kT(n/2^k) + kcn
+        If n/2^k = 1 -> k = lg(n). Then :
+             = 2^lg(n)T(1) + cnlg(n)
+             = n + cnlg(n)
+        T(n) = O(nlg(n))
+
+Quick sort
+----------
+Recursive algorithm
+Picks a pivot element, sorts the remaining array into those elements <= and >
+This allows for a semi-sorted array where the pivot is in it's correct position and all elements are correctly either on the left or the right
+Repeat for each side of the pivot
+Best case : O(nlg(n))
+Worst case : O(n^2)
+    This is due to continuously lop-sided sub-lists of length 0 and n-1
+
+HeapSort
+--------
+Always runs in O(nlog(n))
+Start by interpreting a list as a tree structure
+
+Binary search
+-------------
+def bin_search(arr):
+    if arr[mid] == to_find:
+        return mid
+    else:
+        if to_find > arr[mid]:
+            return bin_search(arr[mid+1:]
+        else:
+            return bin_search(arr[:mid]
+
+Stacks, Queues, and Linked Lists
+--------------------------------
+data structure : a way to store and organize data to facilitate access and modifications
+abstract data type : a set of data values and associated operations that are precisely specified
+    independent of any particular implementation
+
+abstract data types describe the functionality of data structures
+data structures are implemented as abstract data types
+
+stacks : added to the back, removed from the back
+    operations : create, push, top, pop, isEmpty
+queues : added to the back, removed from the front
+linked list : instead of an array stored in adjacent memory locations,
+    a linked list is composed of nodes of data and pointers to the next node
+
+RedBlack Trees
+--------------
+BST augmented with node color
+Operations designed to guarantee that the height h = O(lg(n))
+Red-Black Properties :
+    Every node is either RED or BLACK
+    Every NULL pointer at the base of the tree is BLACK
+    If a node is RED both children are BLACK
+    Every path from node to descendant contains the same number of BLACK nodes
+    The root is always BLACK
+A FULL AND COMPLETE binary tree :
+    All non-leaf nodes have two children
+    All leaf nodes are the same depth
+    n = 2^(h+1) - 1
+        where
+        n = number of nodes in a tree
+        h = height of the tree
+    h+1 = lg(n+1)
+All operations take O(lg(n)) time
+    Minimum(), Maximum(), Successor(), Predecessor(), Search()
+    Insert() and Delete()
+Rotation : basic operation for changing tree structure
+        |                                   |
+        Y                                   X
+       / \      --rotate right-->          / \
+      X   C     <--rotate left--          A   Y
+     / \                                     / \
+    A   B                                   B   C
+Insertion Cases :
+    Case 0 :
+        New node Z is always RED. Insert as you would into a BST.
+    Case 1 :
+        If new node Z is RED and its parent is BLACK no further action is required.
+    Case 2 :
+        If new node Z is RED and its parent is RED, then :
+            If it's uncle is BLACK :
+                If the insertion path from grandparent -> parent -> node BOTH LEFT then :
+                    Do a RIGHT rotation around grandparent
+                    Color flip parent and grandparent
+                If the insertion path from grandparent -> parent -> node BOTH RIGHT then :
+                    Do a LEFT rotation around grandparent
+                    Color flip parent and grandparent
+                If the insertion path from grandparent -> parent -> node LEFT THEN RIGHT :
+                    Do a LEFT rotation around parent
+                    Do a RIGHT rotation around Z
+                    Color flip parent and grandparent
+                If the insertion path from grandparent -> parent -> node RIGHT THEN LEFT :
+                    Do a RIGHT rotation around the parent
+                    Do a LEFT rotation around Z
+                    Color flip parent and grandparent
+            If it's uncle is RED :
+                Color flip parent, uncle and grandparent
+    Case 3 :
+        If the ROOT is RED, change it to BLACK
+
+Binary Search Trees
+-------------------
+Binary Tree : each node has at most two children
+Binary Search Tree : left subtree is always less than the node
+                     right subtree is always greater than the node
+Balanced BST : O(lg(n))
+Unbalanced BST : O(n)
+Three types of BST traversal :
+    Pre-Order
+    Post-Order
+    In-Order
+
+Hash Tables
+-----------
+organize data in a table of hash values
+hashes are assigned to each data point
+if a hash is already in use:
+    employ either a hash table of linked lists
+    or
+    assign next available hash
+
+Graphs
+------
+Data structures that connect a set of objects to form a network
+    Objects are called "Nodes" or "Vertices"
+    Connections are called "Edges"
+    Types of Graphs :
+        Undirected vs Directed
+        Weighted vs Unweighted
+        Dense vs Sparse
+            If a graph has n vertices -> maximum edges is (n^2-n)/2 = O(n^2)
+    Types of Representation :
+        Adjacency matrix
+        Adjacency list
+Graph traversal
+    Breadth First
+        Establish a queue
+        Add first node to the queue
+        Add the first node's neighbors to the queue
+        Remove first node
+        Proceed to next node and repeat
+        O(V+E)
+    Depth First
+        Establish a stack
+        Keeps track of each node's color, which represents whether the node has already been visited
+
+Topological sort
+----------------
+Sorting technique over Directed Acyclic Graphs
+Creates a linear sequence for the nodes such that
+    If U has an outgoing edge to V then U must finish before V starts
+
+
+Shortest path algorithms
+------------------------
+Bellman-Ford :
+    Solve single source shortest path algorithm in a graph with negative edge weights
+Dijkstra's :
+    Solve single source shortest path algorithm in a graph with positive edge weights only

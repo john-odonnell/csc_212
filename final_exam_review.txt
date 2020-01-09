@@ -176,6 +176,10 @@ HeapSort
 --------
 Always runs in O(nlog(n))
 Start by interpreting a list as a tree structure
+Heapify the tree, which means every child is less than its parent
+swap root node with the last leaf. The root is now sorted.
+Repeat until the tree is empty
+Runs in O(nlg(n))
 
 Binary search
 -------------
@@ -309,6 +313,8 @@ Topological sort
 Sorting technique over Directed Acyclic Graphs
 Creates a linear sequence for the nodes such that
     If U has an outgoing edge to V then U must finish before V starts
+Creates a list where every "source" node comes before its "receiving" counterpart
+Establish directed graph based off rules then run DFS to order tasks/nodes
 
 
 Shortest path algorithms
@@ -317,3 +323,4 @@ Bellman-Ford :
     Solve single source shortest path algorithm in a graph with negative edge weights
 Dijkstra's :
     Solve single source shortest path algorithm in a graph with positive edge weights only
+    Runs in O(Elog(V))

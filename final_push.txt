@@ -1,2 +1,2 @@
-this represent the end of csc_212
+this represents the end of csc_212
 A
